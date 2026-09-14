@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贺小波 | 交互式简历</title>
+<style>
+/* ============================================
+   贺小波 交互式简历
+   编辑说明：
+   - 所有文字内容均在 <body> 中，可直接搜索修改
+   - 摄影作品图片替换：搜索 PHOTO-PLACEHOLDER 注释
+   - 主题色修改：搜索 :root 中的 CSS 变量
+   - 本文件为单文件，无外部依赖，可直接用浏览器打开
+   ============================================ */
+
+:root {
+  --bg: #fafaf8;
+  --bg-dark: #1a1a1a;
+  --text: #222;
+  --text-light: #666;
+  --text-muted: #999;
+  --accent: #c8a96a;       /* 主题强调色 - 暖金色，可修改 */
+  --accent-hover: #b09356;
+  --border: #e5e5e0;
+  --card-bg: #fff;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 40px rgba(0,0,0,0.12);
+  --font-sans: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 顶部导航 ---------- */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(250,250,248,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-light);
+  font-size: 13px;
+  letter-spacing: 1px;
+  transition: var(--transition);
+  position: relative;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text);
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.3s;
+}
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+.nav-toggle {
+  display: none;
+  background: none; border: none;
+  font-size: 22px; cursor: pointer;
+  color: var(--text);
+}
+
+/* ---------- Hero 头部 ---------- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-dark);
+  color: #fff;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(200,169,106,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(200,169,106,0.08) 0%, transparent 40%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 32px;
+  max-width: 800px;
+}
+.hero-name {
+  font-family: var(--font-serif);
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 300;
+  letter-spacing: 12px;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 1s 0.2s forwards;
+}
+.hero-name em {
+  font-style: normal;
+  color: #fff;
+}
+.hero-title {
+  font-size: clamp(14px, 2vw, 18px);
+  letter-spacing: 6px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 1s 0.4s forwards;
+}
+.hero-divider {
+  width: 60px; height: 1px;
+  background: var(--accent);
+  margin: 0 auto 32px;
+  opacity: 0;
+  animation: fadeUp 1s 0.5s forwards;
+}
+.hero-desc {
+  font-size: 15px;
+  line-height: 2;
+  color: rgba(255,255,255,0.7);
+  max-width: 560px;
+  margin: 0 auto 48px;
+  opacity: 0;
+  animation: fadeUp 1s 0.6s forwards;
+}
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  animation: fadeUp 1s 0.8s forwards;
+}
+.hero-tag {
+  padding: 6px 18px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.7);
+  transition: var(--transition);
+}
+.hero-tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  letter-spacing: 3px;
+  animation: bounce 2s infinite;
+}
+.hero-scroll::after {
+  content: '';
+  display: block;
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+  margin: 8px auto 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ---------- 通用 Section ---------- */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 32px;
+}
+.section-header {
+  margin-bottom: 56px;
+  text-align: center;
+}
+.section-label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 400;
+  letter-spacing: 4px;
+  margin-bottom: 16px;
+}
+.section-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* 滚动显现动画 */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- 关于我 ---------- */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 64px;
+  align-items: start;
+}
+.about-photo {
+  position: relative;
+  aspect-ratio: 3/4;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* PHOTO-PLACEHOLDER: 个人头像 - 将 background 替换为 url('你的照片路径') */
+.about-photo::before {
+  content: '照片';
+  color: rgba(255,255,255,0.2);
+  font-size: 14px;
+  letter-spacing: 4px;
+}
+.about-photo::after {
+  content: '';
+  position: absolute;
+  top: 12px; left: 12px; right: -12px; bottom: -12px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  z-index: -1;
+}
+.about-text h3 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+.about-text p {
+  color: var(--text-light);
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+.about-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.about-meta-item {
+  font-size: 13px;
+}
+.about-meta-item strong {
+  display: block;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.about-meta-item span { color: var(--text); }
+
+/* ---------- 时间线 ---------- */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 48px;
+  cursor: pointer;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -36px; top: 8px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  transition: var(--transition);
+}
+.timeline-item:hover::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 6px rgba(200,169,106,0.15);
+}
+.timeline-date {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.timeline-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+.timeline-role {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.timeline-content {
+  font-size: 14px;
+  color: var(--text-light);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, margin 0.3s ease;
+}
+.timeline-item.expanded .timeline-content {
+  max-height: 500px;
+  margin-top: 12px;
+}
+.timeline-content p { margin-bottom: 8px; }
+.timeline-awards {
+  list-style: none;
+  margin-top: 12px;
+  padding-left: 0;
+}
+.timeline-awards li {
+  padding: 6px 0 6px 20px;
+  position: relative;
+  font-size: 13px;
+  color: var(--text-light);
+}
+.timeline-awards li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 8px;
+  top: 10px;
+}
+.timeline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+.timeline-toggle .arrow {
+  display: inline-block;
+  transition: transform 0.3s;
+}
+.timeline-item.expanded .timeline-toggle .arrow {
+  transform: rotate(180deg);
+}
+
+/* 强化创业经历主线 */
+.timeline-featured {
+  background: linear-gradient(135deg, rgba(200,169,106,0.08), rgba(250,250,248,0.9));
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+  padding: 24px 26px 28px 50px;
+  margin-left: -12px;
+  transform: translateY(-2px);
+}
+.timeline-featured::before {
+  left: -46px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(200,169,106,0.16);
+}
+.timeline-featured .timeline-title {
+  font-size: 24px;
+  color: var(--bg-dark);
+  font-weight: 700;
+}
+.timeline-featured .timeline-date {
+  color: var(--accent-hover);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.timeline-featured .timeline-role {
+  color: var(--bg-dark);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.timeline-featured .timeline-content {
+  color: var(--text);
+  background: rgba(255,255,255,0.5);
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+}
+.timeline-featured .timeline-content p {
+  color: var(--text-light);
+}
+.timeline-featured .timeline-awards li::before {
+  color: var(--accent-hover);
+}
+.timeline-featured .timeline-toggle {
+  color: var(--accent-hover);
+  font-weight: 800;
+}
+.timeline-featured .timeline-kpi {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 14px 0 16px;
+}
+.timeline-featured .timeline-kpi-item {
+  min-width: 110px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 8px 14px;
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.timeline-featured .timeline-kpi-value {
+  font-family: var(--font-serif);
+  color: var(--bg-dark);
+  font-size: 25px;
+  font-weight: 600;
+}
+.timeline-featured .timeline-kpi-label {
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.timeline-featured .timeline-feature-badge {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 4px 12px;
+  background: var(--bg-dark);
+  color: var(--accent);
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ---------- 摄影作品展示 ---------- */
+.portfolio {
+  background: var(--bg-dark);
+  color: #fff;
+  padding: 100px 0;
+}
+.portfolio .section-label { color: var(--accent); }
+.portfolio .section-title { color: #fff; }
+.portfolio .section-subtitle { color: rgba(255,255,255,0.4); }
+
+.portfolio-filters {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 8px 24px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(200,169,106,0.05);
+}
+
+.portfolio-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.portfolio-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  cursor: pointer;
+  background: #222;
+}
+.portfolio-item.tall { aspect-ratio: 3/4; grid-row: span 2; }
+.portfolio-item.wide { aspect-ratio: 16/9; grid-column: span 2; }
+
+.portfolio-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* PHOTO-PLACEHOLDER: 作品占位图 - 实际使用时替换为 <img src="作品路径" class="portfolio-img"> */
+.portfolio-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.15);
+  font-size: 11px;
+  letter-spacing: 3px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ph-1 { background: linear-gradient(135deg, #2c2c2c, #1a1a1a); }
+.ph-2 { background: linear-gradient(135deg, #333, #1f1f1f); }
+.ph-3 { background: linear-gradient(135deg, #2a2a2a, #151515); }
+.ph-4 { background: linear-gradient(135deg, #2e2e2e, #1c1c1c); }
+.ph-5 { background: linear-gradient(135deg, #282828, #181818); }
+.ph-6 { background: linear-gradient(135deg, #303030, #1e1e1e); }
+
+.portfolio-item:hover .portfolio-img,
+.portfolio-item:hover .portfolio-placeholder {
+  transform: scale(1.05);
+}
+.portfolio-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+}
+.portfolio-item:hover .portfolio-overlay { opacity: 1; }
+.portfolio-overlay h4 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  transform: translateY(10px);
+  transition: transform 0.4s 0.05s;
+}
+.portfolio-overlay p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  transform: translateY(10px);
+  transition: transform 0.4s 0.1s;
+}
+.portfolio-item:hover .portfolio-overlay h4,
+.portfolio-item:hover .portfolio-overlay p {
+  transform: translateY(0);
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.lightbox.active { display: flex; }
+.lightbox-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  position: relative;
+}
+.lightbox-img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+.lightbox-caption {
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+  margin-top: 16px;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+.lightbox-close {
+  position: absolute;
+  top: 24px; right: 32px;
+  background: none; border: none;
+  color: #fff; font-size: 32px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.lightbox-close:hover { opacity: 1; }
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  color: #fff; font-size: 36px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+  padding: 20px;
+}
+.lightbox-nav:hover { opacity: 1; }
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+
+/* ---------- 技能与证书 ---------- */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+.skill-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 32px;
+  transition: var(--transition);
+}
+.skill-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-4px);
+}
+.skill-card-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(200,169,106,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.skill-card h4 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.skill-card p {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.skill-tag {
+  padding: 4px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 11px;
+  color: var(--text-light);
+  letter-spacing: 1px;
+}
+
+/* ---------- 教育背景 ---------- */
+.edu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.edu-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 32px;
+  padding: 28px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: var(--transition);
+}
+.edu-item:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.edu-year {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 1px;
+  padding-top: 2px;
+}
+.edu-info h4 {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.edu-info p {
+  font-size: 13px;
+  color: var(--text-light);
+}
+.edu-honors {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ---------- 页脚 ---------- */
+.footer {
+  background: var(--bg-dark);
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  padding: 48px 32px;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.footer strong {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 60px; left: 0; right: 0;
+    background: var(--bg);
+    flex-direction: column;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .about-photo { max-width: 320px; margin: 0 auto; }
+
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .portfolio-item.wide { grid-column: span 2; }
+  .portfolio-item.tall { grid-row: span 1; aspect-ratio: 4/3; }
+
+  .edu-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .section { padding: 64px 20px; }
+  .timeline { padding-left: 28px; }
+}
+
+@media (max-width: 480px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .portfolio-item.wide { grid-column: span 1; }
+  .hero-name { letter-spacing: 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 导航 ========== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">贺小波<span>.</span></div>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about" class="nav-link">关于</a></li>
+      <li><a href="#experience" class="nav-link">经历</a></li>
+      <li><a href="#portfolio" class="nav-link">作品</a></li>
+      <li><a href="#skills" class="nav-link">技能</a></li>
+      <li><a href="#education" class="nav-link">教育</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ========== Hero ========== -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1 class="hero-name">HE XIAOBO</h1>
+    <p class="hero-title">摄影师 · 纪录片导演 · 电商CEO</p>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">
+      二十年影像创作经验，从新闻纪实到街头摄影，从商业电商到独立纪录片。
+      用光影讲述故事，持续学习，持续创业。
+    </p>
+    <div class="hero-tags">
+      <span class="hero-tag">纪实摄影</span>
+      <span class="hero-tag">纪录片制作</span>
+      <span class="hero-tag">电商创业</span>
+    </div>
+  </div>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<!-- ========== 关于我 ========== -->
+<section class="section" id="about">
+  <div class="section-header reveal">
+    <div class="section-label">ABOUT ME</div>
+    <h2 class="section-title">关于我</h2>
+    <p class="section-subtitle">用镜头观察世界，用影像表达思考</p>
+  </div>
+  <div class="about-grid">
+    <div class="about-photo reveal">
+      <img src="assets/L1001823.jpg" alt="个人照片" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div class="about-text reveal">
+      <h3>影像即语言</h3>
+      <p>
+        2005年起从新闻摄影起步，作品发表于国内外300家以上媒体，累计发表图片作品1200幅以上，包括《财经》杂志封面、《南方都市报》封面。
+      </p>
+      <p>
+        2021年5月起独立创作纪录片长片《150000 Shots》，历经三年完成，入围多个国际电影节并获得美国休士顿电影节雷米奖银奖。2026年9月，两幅摄影作品入选上海徕卡摄影节精选，并于上海西岸中环大屏展出。
+      </p>
+      <p>
+        目前就读于岭南大学商学院艺术科技商业理学硕士，探索艺术与科技的交叉领域。
+      </p>
+      <div class="about-meta">
+        <div class="about-meta-item">
+          <strong>出生</strong>
+          <span>1981年7月 · 湖南邵阳</span>
+        </div>
+        <div class="about-meta-item">
+          <strong>身份</strong>
+          <span>香港无条件逗留居民</span>
+        </div>
+        <div class="about-meta-item">
+          <strong>语言</strong>
+          <span>中文（母语）· 英语（雅思5.5）</span>
+        </div>
+        <div class="about-meta-item">
+          <strong>兴趣</strong>
+          <span>街头摄影 · 电影 · 击剑 · 网球</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 工作经历 ========== -->
+<section class="section" id="experience">
+  <div class="section-header reveal">
+    <div class="section-label">EXPERIENCE</div>
+    <h2 class="section-title">工作经历</h2>
+    <p class="section-subtitle">点击每条经历查看详细内容</p>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2026.08 — 至今</div>
+      <h3 class="timeline-title">岭南大学 · 艺术科技商业理学硕士</h3>
+      <div class="timeline-role">在读研究生</div>
+      <div class="timeline-content">
+        <p>就读于岭南大学商学院，专注艺术与科技交叉领域的商业研究。</p>
+        <p>2006年9月，两幅摄影作品精选并在上海西岸中环大屏展出。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2021 — 2025</div>
+      <h3 class="timeline-title">纪录片长片《150000 Shots》</h3>
+      <div class="timeline-role">导演 · 摄像</div>
+      <div class="timeline-content">
+        <p>独立创作第一部纪录片长片，从2021年5月开拍，历经三年多，于2024年8月全部制作完成。</p>
+        <ul class="timeline-awards">
+          <li>2024 瑞典博登电影节 · 决赛入围</li>
+          <li>2024 意大利罗宾逊电影节 · 半决赛</li>
+          <li>2025 英国伦敦导演奖 · 决赛入围</li>
+          <li>2025 加拿大多伦多诺莱坞电影节 · 最佳纪录片提名</li>
+          <li>2025 美国休士顿电影节 · 雷米奖银奖</li>
+        </ul>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+    <div class="timeline-item timeline-featured reveal expanded" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2008 — 2021</div>
+      <div class="timeline-title-line">
+        <h3 class="timeline-title">服装电子商务公司 · 联合创始人</h3>
+        <span class="timeline-feature-badge">创业主线</span>
+      </div>
+      <div class="timeline-role">总经理 · 法人代表 · 创业经营十三年</div>
+      <div class="timeline-kpi">
+        <span class="timeline-kpi-item">
+          <span class="timeline-kpi-value">13</span>
+          <span class="timeline-kpi-label">年经营</span>
+        </span>
+        <span class="timeline-kpi-item">
+          <span class="timeline-kpi-value">40+</span>
+          <span class="timeline-kpi-label">团队规模</span>
+        </span>
+        <span class="timeline-kpi-item">
+          <span class="timeline-kpi-value">10+</span>
+          <span class="timeline-kpi-label">平台布局</span>
+        </span>
+      </div>
+      <div class="timeline-content">
+        <p>2008年以联合创始人身份在广州创立服装电子商务公司，任职总经理及法人代表十三年，主导公司战略、团队运营与平台拓展。</p>
+        <p>长期管理40人以上公司的人事及日常运营工作，外联全国主流电商平台，包括天猫、京东、小红书、淘宝、速卖通等十余家电商平台，组建多个小团队入驻，形成完整的品牌运营与销售闭环。</p>
+        <ul class="timeline-awards">
+          <li>2014 淘宝夏季大促女装类目 · 全国第22名</li>
+          <li>2014 "美丽说"电商平台女装类目 · 华南区销售第一名</li>
+          <li>落实多平台渠道布局与团队协作机制，推动品牌持续增长</li>
+        </ul>
+      </div>
+      <span class="timeline-toggle">收起详情 <span class="arrow">▼</span></span>
+    </div>
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2005 — 2008</div>
+      <h3 class="timeline-title">自由摄影师 · 图片编辑</h3>
+      <div class="timeline-role">新闻纪实摄影</div>
+      <div class="timeline-content">
+        <p><strong>2008年</strong> 受招商银行邀请赴云南、湖南、黑龙江、重庆、山西等多省贫困地区希望小学支教，每处支教一周，期间拍摄纪实图片上千幅，主办方印刷集合成册内部发行。同年获得尼康年度摄影比赛优胜奖。</p>
+        <p><strong>2007年</strong> 以自由摄影师身份拍摄报道类新闻图片，供稿国内外报刊媒体，包括《三联生活周刊》《中国新闻周刊》《中国青年报》《新世纪周刊》《东方早报》《新京报》，中新社、路透社、CCTV朝闻天下栏目等。在国内外300家以上报刊杂志、通讯社及电视台发表图片作品1200幅以上，包括《财经》杂志封面、《南方都市报》封面。</p>
+        <p><strong>2006下半年</strong> 在《南方周末》旗下《名牌》杂志任职图片编辑，负责杂志封面图片筛选和栏目内容策划及约稿。同年入职《参考消息》华南广告部，任职摄影师及图片编辑。</p>
+        <p><strong>2005—2006上半年</strong> 就职深圳phototex图片社，任职首席摄影师及图片编辑，对接全国2000多名摄影师及几百家报刊媒体。代表公司参加2006年第一届连州国际摄影节及2006年平遥国际摄影节。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 摄影作品展示 ========== -->
+<section class="portfolio" id="portfolio">
+  <div class="section-header reveal">
+    <div class="section-label">PORTFOLIO</div>
+    <h2 class="section-title">摄影作品</h2>
+    <p class="section-subtitle">精选作品 · 点击查看大图</p>
+  </div>
+
+  <div class="portfolio-filters reveal">
+    <button class="filter-btn active" data-filter="all" onclick="filterPortfolio('all', this)">全部</button>
+    <button class="filter-btn" data-filter="street" onclick="filterPortfolio('street', this)">街头摄影</button>
+    <button class="filter-btn" data-filter="documentary" onclick="filterPortfolio('documentary', this)">纪实</button>
+    <button class="filter-btn" data-filter="portrait" onclick="filterPortfolio('portrait', this)">人像</button>
+    <button class="filter-btn" data-filter="news" onclick="filterPortfolio('news', this)">新闻</button>
+  </div>
+
+  <!--
+    PHOTO-PLACEHOLDER: 作品替换说明
+    将每个 .portfolio-placeholder div 替换为:
+    <img src="你的作品图片路径" class="portfolio-img" alt="作品标题">
+    并在 data-category 中设置分类: street / documentary / portrait / news
+  -->
+  <div class="portfolio-grid" id="portfolioGrid">
+
+    <div class="portfolio-item wide reveal" data-category="street" onclick="openLightbox(0)">
+      <div class="portfolio-placeholder ph-1">作品 01</div>
+      <div class="portfolio-overlay">
+        <h4>街头系列 · 之一</h4>
+        <p>Street Photography</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal" data-category="documentary" onclick="openLightbox(1)">
+      <div class="portfolio-placeholder ph-2">作品 02</div>
+      <div class="portfolio-overlay">
+        <h4>支教纪实 · 云南</h4>
+        <p>Documentary</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item tall reveal" data-category="portrait" onclick="openLightbox(2)">
+      <div class="portfolio-placeholder ph-3">作品 03</div>
+      <div class="portfolio-overlay">
+        <h4>人物肖像</h4>
+        <p>Portrait</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal" data-category="news" onclick="openLightbox(3)">
+      <div class="portfolio-placeholder ph-4">作品 04</div>
+      <div class="portfolio-overlay">
+        <h4>新闻现场</h4>
+        <p>News Photography</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal" data-category="street" onclick="openLightbox(4)">
+      <div class="portfolio-placeholder ph-5">作品 05</div>
+      <div class="portfolio-overlay">
+        <h4>街头系列 · 之二</h4>
+        <p>Street Photography</p>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal" data-category="documentary" onclick="openLightbox(5)">
+      <div class="portfolio-placeholder ph-6">作品 06</div>
+      <div class="portfolio-overlay">
+        <h4>纪录片剧照</h4>
+        <p>150000 Shots</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Lightbox 灯箱 -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">‹</button>
+  <div class="lightbox-content">
+    <div class="portfolio-placeholder ph-1 lightbox-img" id="lightboxImg" style="width:600px;height:400px;">作品预览</div>
+    <div class="lightbox-caption" id="lightboxCaption">作品标题</div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">›</button>
+</div>
+
+<!-- ========== 技能与证书 ========== -->
+<section class="section" id="skills">
+  <div class="section-header reveal">
+    <div class="section-label">SKILLS & CERTIFICATES</div>
+    <h2 class="section-title">技能与证书</h2>
+    <p class="section-subtitle">专业能力与资质认证</p>
+  </div>
+  <div class="skills-grid">
+
+    <div class="skill-card reveal">
+      <div class="skill-card-icon">📷</div>
+      <h4>摄影创作</h4>
+      <p>二十年专业摄影经验，涵盖新闻纪实、街头摄影、人像、商业摄影等多个领域。作品发表于国内外300+媒体。</p>
+      <div class="skill-tags">
+        <span class="skill-tag">纪实摄影</span>
+        <span class="skill-tag">街头摄影</span>
+        <span class="skill-tag">人像</span>
+      </div>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-card-icon">🎬</div>
+      <h4>纪录片制作</h4>
+      <p>独立完成纪录片长片的策划、拍摄、剪辑全流程。作品入围多个国际电影节并获奖。</p>
+      <div class="skill-tags">
+        <span class="skill-tag">导演</span>
+        <span class="skill-tag">摄像</span>
+        <span class="skill-tag">剪辑</span>
+        <span class="skill-tag">制片</span>
+      </div>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-card-icon">🏆</div>
+      <h4>专业资质</h4>
+      <p>国家劳动部颁发的高级摄影师职业资格证，具备专业级摄影技术认证。</p>
+      <div class="skill-tags">
+        <span class="skill-tag">高级摄影师</span>
+        <span class="skill-tag">国家认证</span>
+      </div>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-card-icon">💼</div>
+      <h4>商业运营</h4>
+      <p>十三年电商公司管理经验，熟悉天猫、京东、小红书等主流平台运营，带领团队取得行业领先成绩。</p>
+      <div class="skill-tags">
+        <span class="skill-tag">团队管理</span>
+        <span class="skill-tag">电商创业</span>
+        <span class="skill-tag">品牌策划</span>
+      </div>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-card-icon">✏️</div>
+      <h4>图片编辑</h4>
+      <p>曾任职多家媒体图片编辑，负责封面筛选、栏目策划、约稿及2000+摄影师资源对接。</p>
+      <div class="skill-tags">
+        <span class="skill-tag">图片编辑</span>
+        <span class="skill-tag">栏目策划</span>
+        <span class="skill-tag">资源对接</span>
+      </div>
+    </div>
+
+    <div class="skill-card reveal">
+      <div class="skill-card-icon">🌐</div>
+      <h4>语言能力</h4>
+      <p>中文母语，英语雅思5.5分，持续学习提升中。具备跨文化沟通与国际项目合作能力。</p>
+      <div class="skill-tags">
+        <span class="skill-tag">中文（母语）</span>
+        <span class="skill-tag">英语（IELTS 5.5）</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 教育背景 ========== -->
+<section class="section" id="education">
+  <div class="section-header reveal">
+    <div class="section-label">EDUCATION</div>
+    <h2 class="section-title">教育背景</h2>
+    <p class="section-subtitle">学术经历与荣誉</p>
+  </div>
+  <div class="edu-list">
+
+    <div class="edu-item reveal">
+      <div class="edu-year">2026.08 — 至今</div>
+      <div class="edu-info">
+        <h4>岭南大学 · 商学院</h4>
+        <p>艺术科技商业理学硕士（在读）</p>
+      </div>
+    </div>
+
+    <div class="edu-item reveal">
+      <div class="edu-year">2003 — 2005</div>
+      <div class="edu-info">
+        <h4>吉首大学 · 文学与新闻传播学院</h4>
+        <p>新闻学专业 · 文学学士学位</p>
+        <div class="edu-honors">2004年 新闻系年度三等奖学金</div>
+      </div>
+    </div>
+
+    <div class="edu-item reveal">
+      <div class="edu-year">2000 — 2003</div>
+      <div class="edu-info">
+        <h4>湖南大众传媒技术学院</h4>
+        <p>广播电视新闻学专业 · 三年制专科</p>
+        <div class="edu-honors">2001年 年度三等奖学金</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 业余活动 ========== -->
+<section class="section" id="activities" style="padding-top: 0;">
+  <div class="section-header reveal">
+    <div class="section-label">ACTIVITIES</div>
+    <h2 class="section-title">业余活动与进修</h2>
+    <p class="section-subtitle">持续学习与创作</p>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2022.07</div>
+      <h3 class="timeline-title">纪录片工作坊</h3>
+      <div class="timeline-role">广州 · 导演周浩、黄伟凯指导</div>
+      <div class="timeline-content">
+        <p>7月8日至22日在广州参加导演周浩、导演黄伟凯纪录片工作坊，制作出第一部纪录片短片《海玥花园》，并在广州时代美术馆对外展映。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2019</div>
+      <h3 class="timeline-title">Matt Stuart 街头摄影大师班</h3>
+      <div class="timeline-role">深圳 · 前马格南摄影师授课</div>
+      <div class="timeline-content">
+        <p>参加前马格南摄影师 Matt Stuart 深圳大师班课程一周，深入学习街头摄影技法与创作理念。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2008</div>
+      <h3 class="timeline-title">人物采访拍摄</h3>
+      <div class="timeline-role">受邀拍摄</div>
+      <div class="timeline-content">
+        <p>受邀采访拍摄台湾作家张德芬、心理学专家武志红等学者，以及方圆地产副总裁黄新发等民营企业家。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2005</div>
+      <h3 class="timeline-title">《潇湘晨报》实习</h3>
+      <div class="timeline-role">实习摄影记者</div>
+      <div class="timeline-content">
+        <p>湖南《潇湘晨报》实习期间采访及拍摄了郭富城、邹市明、仇晓、汪涵等文娱体育明星，同年采访及拍摄大量突发社会新闻及民生新闻图片发表在《潇湘晨报》。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 页脚 ========== -->
+<footer class="footer">
+  <p><strong>贺小波</strong> · 交互式简历 · 用镜头讲述故事</p>
+  <p style="margin-top:8px; opacity:0.5;">© 2026 He Xiaobo. All rights reserved.</p>
+</footer>
+
+<script>
+// ========== 移动端导航 ==========
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+// 点击导航链接后关闭移动端菜单
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+// ========== 时间线展开/收起 ==========
+function toggleTimeline(el) {
+  el.classList.toggle('expanded');
+  const toggle = el.querySelector('.timeline-toggle');
+  if (el.classList.contains('expanded')) {
+    toggle.innerHTML = '收起详情 <span class="arrow">▼</span>';
+  } else {
+    toggle.innerHTML = '展开详情 <span class="arrow">▼</span>';
+  }
+}
+
+// ========== 滚动显现动画 ==========
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ========== 导航高亮 ==========
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 100;
+    if (window.scrollY >= sectionTop) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// ========== 作品筛选 ==========
+function filterPortfolio(category, btn) {
+  // 更新按钮状态
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // 筛选作品
+  const items = document.querySelectorAll('.portfolio-item');
+  items.forEach(item => {
+    if (category === 'all' || item.dataset.category === category) {
+      item.style.display = '';
+      setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 10);
+    } else {
+      item.style.opacity = '0';
+      item.style.transform = 'scale(0.9)';
+      setTimeout(() => { item.style.display = 'none'; }, 300);
+    }
+  });
+}
+
+// ========== Lightbox 灯箱 ==========
+let currentLightboxIndex = 0;
+const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+function getVisibleItems() {
+  return Array.from(portfolioItems).filter(item => item.style.display !== 'none');
+}
+
+function openLightbox(index) {
+  const visibleItems = getVisibleItems();
+  currentLightboxIndex = index;
+  const item = visibleItems[index];
+  if (!item) return;
+
+  const title = item.querySelector('.portfolio-overlay h4')?.textContent || '作品';
+  const subtitle = item.querySelector('.portfolio-overlay p')?.textContent || '';
+
+  // 如果是真实图片，显示图片；否则显示占位
+  const img = item.querySelector('.portfolio-img');
+  const lightboxImg = document.getElementById('lightboxImg');
+  if (img) {
+    lightboxImg.innerHTML = '';
+    lightboxImg.style.background = 'none';
+    const newImg = document.createElement('img');
+    newImg.src = img.src;
+    newImg.style.maxWidth = '90vw';
+    newImg.style.maxHeight = '80vh';
+    newImg.style.objectFit = 'contain';
+    lightboxImg.innerHTML = '';
+    lightboxImg.appendChild(newImg);
+  }
+
+  document.getElementById('lightboxCaption').textContent = title + (subtitle ? ' · ' + subtitle : '');
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function navLightbox(direction) {
+  const visibleItems = getVisibleItems();
+  currentLightboxIndex = (currentLightboxIndex + direction + visibleItems.length) % visibleItems.length;
+  openLightbox(currentLightboxIndex);
+}
+
+// 键盘控制
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+// 点击背景关闭
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLightbox();
+});
+</script>
+
+</body>
+</html>
