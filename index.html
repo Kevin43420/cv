@@ -834,7 +834,6 @@ body {
 <!-- ========== 导航 ========== -->
 <nav class="nav">
   <div class="nav-inner">
-    <div class="nav-logo">贺小波<span>.</span></div>
     <button class="nav-toggle" onclick="toggleNav()">☰</button>
     <ul class="nav-links" id="navLinks">
       <li><a href="#about" class="nav-link">关于</a></li>
@@ -890,10 +889,6 @@ body {
       </p>
       <div class="about-meta">
         <div class="about-meta-item">
-          <strong>出生</strong>
-          <span>1981年7月 · 湖南邵阳</span>
-        </div>
-        <div class="about-meta-item">
           <strong>身份</strong>
           <span>香港无条件逗留居民</span>
         </div>
@@ -925,7 +920,6 @@ body {
       <div class="timeline-role">在读研究生</div>
       <div class="timeline-content">
         <p>就读于岭南大学商学院，专注艺术与科技交叉领域的商业研究。</p>
-        <p>2006年9月，两幅摄影作品精选并在上海西岸中环大屏展出。</p>
       </div>
       <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
     </div>
@@ -986,7 +980,7 @@ body {
       <div class="timeline-role">新闻纪实摄影</div>
       <div class="timeline-content">
         <p><strong>2008年</strong> 受招商银行邀请赴云南、湖南、黑龙江、重庆、山西等多省贫困地区希望小学支教，每处支教一周，期间拍摄纪实图片上千幅，主办方印刷集合成册内部发行。同年获得尼康年度摄影比赛优胜奖。</p>
-        <p><strong>2007年</strong> 以自由摄影师身份拍摄报道类新闻图片，供稿国内外报刊媒体，包括《三联生活周刊》《中国新闻周刊》《中国青年报》《新世纪周刊》《东方早报》《新京报》，中新社、路透社、CCTV朝闻天下栏目等。在国内外300家以上报刊杂志、通讯社及电视台发表图片作品1200幅以上，包括《财经》杂志封面、《南方都市报》封面。</p>
+        <p><strong>2007年</strong> 以自由摄影师身份拍摄报道类新闻图片，供稿国内外新闻媒体，包括《三联生活周刊》《中国新闻周刊》《中国青年报》《新世纪周刊》《东方早报》《新京报》，中新社、路透社、CCTV朝闻天下栏目等。在国内外300家以上报刊杂志、通讯社及电视台发表图片作品1200幅以上，包括《财经》杂志封面、《南方都市报》封面。</p>
         <p><strong>2006下半年</strong> 在《南方周末》旗下《名牌》杂志任职图片编辑，负责杂志封面图片筛选和栏目内容策划及约稿。同年入职《参考消息》华南广告部，任职摄影师及图片编辑。</p>
         <p><strong>2005—2006上半年</strong> 就职深圳phototex图片社，任职首席摄影师及图片编辑，对接全国2000多名摄影师及几百家报刊媒体。代表公司参加2006年第一届连州国际摄影节及2006年平遥国际摄影节。</p>
       </div>
@@ -1009,7 +1003,7 @@ body {
     <button class="filter-btn" data-filter="street" onclick="filterPortfolio('street', this)">街头摄影</button>
     <button class="filter-btn" data-filter="documentary" onclick="filterPortfolio('documentary', this)">纪实</button>
     <button class="filter-btn" data-filter="portrait" onclick="filterPortfolio('portrait', this)">人像</button>
-    <button class="filter-btn" data-filter="news" onclick="filterPortfolio('news', this)">新闻</button>
+    <button class="filter-btn" data-filter="sports" onclick="filterPortfolio('sports', this)">体育</button>
   </div>
 
   <!--
@@ -1020,11 +1014,11 @@ body {
   -->
   <div class="portfolio-grid" id="portfolioGrid">
 
-    <div class="portfolio-item wide reveal" data-category="street" onclick="openLightbox(0)">
-      <div class="portfolio-placeholder ph-1">作品 01</div>
+    <div class="portfolio-item tall reveal" data-category="documentary" onclick="openLightbox(0)">
+      <img src="assets/150000_SHOTS_poster_festival.jpg" class="portfolio-img" alt="纪录片作品海报">
       <div class="portfolio-overlay">
-        <h4>街头系列 · 之一</h4>
-        <p>Street Photography</p>
+        <h4>纪录片作品</h4>
+        <p>Documentary</p>
       </div>
     </div>
 
@@ -1044,18 +1038,18 @@ body {
       </div>
     </div>
 
-    <div class="portfolio-item reveal" data-category="news" onclick="openLightbox(3)">
-      <div class="portfolio-placeholder ph-4">作品 04</div>
+    <div class="portfolio-item reveal" data-category="sports" onclick="openLightbox(3)">
+      <img src="assets/L1001823.jpg" class="portfolio-img" alt="体育赛事纪实">
       <div class="portfolio-overlay">
-        <h4>新闻现场</h4>
-        <p>News Photography</p>
+        <h4>体育赛事纪实</h4>
+        <p>Sports Photography</p>
       </div>
     </div>
 
     <div class="portfolio-item reveal" data-category="street" onclick="openLightbox(4)">
       <div class="portfolio-placeholder ph-5">作品 05</div>
       <div class="portfolio-overlay">
-        <h4>街头系列 · 之二</h4>
+        <h4>街头系列</h4>
         <p>Street Photography</p>
       </div>
     </div>
@@ -1177,20 +1171,11 @@ body {
     </div>
 
     <div class="edu-item reveal">
-      <div class="edu-year">2003 — 2005</div>
+      <div class="edu-year">2005年本科毕业</div>
       <div class="edu-info">
         <h4>吉首大学 · 文学与新闻传播学院</h4>
         <p>新闻学专业 · 文学学士学位</p>
         <div class="edu-honors">2004年 新闻系年度三等奖学金</div>
-      </div>
-    </div>
-
-    <div class="edu-item reveal">
-      <div class="edu-year">2000 — 2003</div>
-      <div class="edu-info">
-        <h4>湖南大众传媒技术学院</h4>
-        <p>广播电视新闻学专业 · 三年制专科</p>
-        <div class="edu-honors">2001年 年度三等奖学金</div>
       </div>
     </div>
 
@@ -1205,6 +1190,16 @@ body {
     <p class="section-subtitle">持续学习与创作</p>
   </div>
   <div class="timeline">
+
+    <div class="timeline-item reveal" onclick="toggleTimeline(this)">
+      <div class="timeline-date">2025—2026</div>
+      <h3 class="timeline-title">兴趣与体育训练</h3>
+      <div class="timeline-role">街头摄影 · 电影观看 · 拳击、网球与击剑</div>
+      <div class="timeline-content">
+        <p>平时主要兴趣为街头摄影，观看各类虚构或纪实电影，偶尔进行拳击及网球训练。完成过2025年香港马拉松10公里组别赛程，凭借一定的实战经验，于2026年9月入选岭南大学校击剑队。</p>
+      </div>
+      <span class="timeline-toggle">展开详情 <span class="arrow">▼</span></span>
+    </div>
 
     <div class="timeline-item reveal" onclick="toggleTimeline(this)">
       <div class="timeline-date">2022.07</div>
